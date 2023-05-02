@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" client="administrator" method="upgrade">
+  <name>mod_publicfolder</name>
+  <author>Dimitrios Grammatikogiannis</author>
+  <creationDate>2023-May</creationDate>
+  <copyright>(C) 2023 Dimitrios Grammatikogiannis</copyright>
+  <license>GNU General Public License version 3 or later</license>
+  <authorEmail>d.grammatiko@gmail.com</authorEmail>
+  <authorUrl>https://dgrammatiko.dev</authorUrl>
+  <version>0.0.0</version>
+  <description>Some description</description>
+  <namespace path="src">Dgrammatiko\Module\Publicfolder</namespace>
+  <files>
+    <folder module="mod_publicfolder">services</folder>
+    <folder>src</folder>
+    <folder>tmpl</folder>
+  </files>
+  <media folder="media" destination="mod_publicfolder">
+    <folder>js</folder>
+    <folder>css</folder>
+    <folder>images</folder>
+  </media>
+  <config>
+    <fields name="params">
+      <fieldset name="options" label="Basic">
+      </fieldset>
+      <fieldset name="advanced">
+      </fieldset>
+    </fields>
+  </config>
+</extension>
