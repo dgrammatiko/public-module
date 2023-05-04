@@ -13,6 +13,7 @@
   <files>
     <folder module="mod_publicfolder">services</folder>
     <folder>src</folder>
+    <folder>language</folder>
     <folder>tmpl</folder>
   </files>
   <media folder="media" destination="mod_publicfolder">
