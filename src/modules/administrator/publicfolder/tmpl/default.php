@@ -1,8 +1,8 @@
 <?php
 
 /**
- * @copyright   (C) 2021 Dimitris Grammatikogiannis
- * @license     GNU General Public License version 3
+ * @copyright  (C) 2023 Dimitrios Grammatikogiannis
+ * @license    GNU General Public License version 3 or later
  */
 
 use Joomla\CMS\HTML\HTMLHelper;

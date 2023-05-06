@@ -1,8 +1,8 @@
 <?php
 
 /**
- * (C) 2023 Dimitrios Grammatikogiannis
- * GNU General Public License version 3 or later
+ * @copyright  (C) 2023 Dimitrios Grammatikogiannis
+ * @license    GNU General Public License version 3 or later
  */
 
 namespace Dgrammatiko\Module\Publicfolder\Administrator\Dispatcher;

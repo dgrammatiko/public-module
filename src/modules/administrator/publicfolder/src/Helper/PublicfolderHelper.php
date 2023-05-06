@@ -1,8 +1,8 @@
 <?php
 
 /**
- * (C) 2023 Dimitrios Grammatikogiannis
- * GNU General Public License version 3 or later
+ * @copyright  (C) 2023 Dimitrios Grammatikogiannis
+ * @license    GNU General Public License version 3 or later
  */
 
 namespace Dgrammatiko\Module\Publicfolder\Administrator\Helper;
@@ -13,7 +13,6 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Session\Session;
 use Joomla\Registry\Registry;
-use Symfony\Component\Console\Exception\LogicException;
 
 class PublicfolderHelper
 {
@@ -28,24 +27,24 @@ class PublicfolderHelper
       return self::createPublicFolder($folder);
     }
 
-    throw new LogicException('You shall not pass', 200);
+    throw new \Exception('You shall not pass', 200);
   }
 
   private static function createSymlink($source, $dest) {
     if (!symlink($source, $dest)) {
-      throw new LogicException('Unable to symlink the file: ' . str_replace(JPATH_ROOT, '', $source), 200);
+      throw new \Exception('Unable to symlink the file: ' . str_replace(JPATH_ROOT, '', $source), 200);
     }
   }
 
   private static function createFile($path, $content){
     if (!file_put_contents($path, $content)) {
-      throw new LogicException('Unable to create the file: ' . str_replace(JPATH_ROOT, '', $path), 200);
+      throw new \Exception('Unable to create the file: ' . str_replace(JPATH_ROOT, '', $path), 200);
     }
   }
 
   private static function createPublicFolder($folder) {
     if (!is_dir($folder) && !mkdir($folder, 0755, true)) {
-      throw new LogicException('The given directory doesn\'t exist or not accessible due to wrong permissions', 200);
+      throw new \Exception('The given directory doesn\'t exist or not accessible due to wrong permissions', 200);
     }
 
     // Create the required folders
@@ -53,7 +52,7 @@ class PublicfolderHelper
       || !mkdir($folder . '/administrator/includes', 0755, true)
       || !mkdir($folder . '/api/includes', 0755, true)
       || !mkdir($folder . '/includes', 0755)) {
-      throw new LogicException('Unable to write on the given directory, check the permissions', 200);
+      throw new \Exception('Unable to write on the given directory, check the permissions', 200);
     }
 
     // Create symlink for the joomla update entry point
@@ -125,22 +124,21 @@ define('_JDEFINES', '1');
 
 HTML;
 
-    // The defines file
-    $definesContent = str_replace('{{BASEFOLDER}}', '"' . JPATH_BASE . '"', $definesTemplate);
-    $definesContent = str_replace('{{PUBLICFOLDER}}', '"' . $folder . '"', $definesContent);
+    // The defines files
+    $definesContent = str_replace(['{{BASEFOLDER}}', '{{PUBLICFOLDER}}'], ['"' . JPATH_BASE . '"', '"' . $folder . '"'], $definesTemplate);
+    self::createFile($folder . '/defines.php', $definesContent);
+    self::createFile($folder . '/administrator/defines.php', $definesContent);
+    self::createFile($folder . '/api/defines.php', $definesContent);
 
     // Populate the includes
-    self::createFile($folder . '/defines.php', $definesContent);
     self::createFile($folder . '/includes/app.php', file_get_contents(JPATH_ROOT . '/includes/app.php'));
     self::createFile($folder . '/includes/framework.php', file_get_contents(JPATH_ROOT . '/includes/framework.php'));
 
     // Populate the administrator/includes
-    self::createFile($folder . '/administrator/defines.php', $definesContent);
     self::createFile($folder . '/administrator/includes/app.php', file_get_contents(JPATH_ROOT . '/administrator/includes/app.php'));
     self::createFile($folder . '/administrator/includes/framework.php', file_get_contents(JPATH_ROOT . '/administrator/includes/framework.php'));
 
     // Populate the api/includes
-    self::createFile($folder . '/api/defines.php', $definesContent);
     self::createFile($folder . '/api/includes/app.php', file_get_contents(JPATH_ROOT . '/api/includes/app.php'));
     self::createFile($folder . '/api/includes/framework.php', file_get_contents(JPATH_ROOT . '/api/includes/framework.php'));
 
