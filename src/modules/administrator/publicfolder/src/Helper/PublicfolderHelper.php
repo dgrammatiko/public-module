@@ -125,7 +125,7 @@ define('_JDEFINES', '1');
 HTML;
 
     // The defines files
-    $definesContent = str_replace(['{{BASEFOLDER}}', '{{PUBLICFOLDER}}'], ['"' . JPATH_BASE . '"', '"' . $folder . '"'], $definesTemplate);
+    $definesContent = str_replace(['{{BASEFOLDER}}', '{{PUBLICFOLDER}}'], ['"' . JPATH_ROOT . '"', '"' . $folder . '"'], $definesTemplate);
     self::createFile($folder . '/defines.php', $definesContent);
     self::createFile($folder . '/administrator/defines.php', $definesContent);
     self::createFile($folder . '/api/defines.php', $definesContent);
