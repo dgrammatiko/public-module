@@ -7,7 +7,7 @@
 
 namespace Dgrammatiko\Module\Publicfolder\Administrator\Helper;
 
-\defined('_JEXEC') || die();
+\defined('_JEXEC') || die;
 
 use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\PluginHelper;
@@ -30,19 +30,22 @@ class PublicfolderHelper
     throw new \Exception('You shall not pass', 200);
   }
 
-  private static function createSymlink($source, $dest) {
+  private static function createSymlink($source, $dest)
+  {
     if (!symlink($source, $dest)) {
       throw new \Exception('Unable to symlink the file: ' . str_replace(JPATH_ROOT, '', $source), 200);
     }
   }
 
-  private static function createFile($path, $content){
+  private static function createFile($path, $content)
+  {
     if (!file_put_contents($path, $content)) {
       throw new \Exception('Unable to create the file: ' . str_replace(JPATH_ROOT, '', $path), 200);
     }
   }
 
-  private static function createPublicFolder($folder) {
+  private static function createPublicFolder($folder)
+  {
     if (!is_dir($folder) && !mkdir($folder, 0755, true)) {
       throw new \Exception('The given directory doesn\'t exist or not accessible due to wrong permissions', 200);
     }
@@ -55,6 +58,12 @@ class PublicfolderHelper
       throw new \Exception('Unable to write on the given directory, check the permissions', 200);
     }
 
+    $files = [
+      '/index.php', '/includes/app.php', '/includes/framework.php',
+      '/administrator/index.php', '/administrator/includes/app.php', '/administrator/includes/framework.php',
+      '/api/index.php', '/api/includes/app.php', '/api/includes/framework.php',
+    ];
+
     // Create symlink for the joomla update entry point
     self::createSymlink(JPATH_ROOT . '/administrator/components/com_joomlaupdate/extract.php', $folder . '/administrator/components/com_joomlaupdate/extract.php');
 
@@ -63,7 +72,7 @@ class PublicfolderHelper
 
     // Create symlinks to all the local filesystem directories
     if (PluginHelper::isEnabled('filesystem', 'local')) {
-      $local = PluginHelper::getPlugin('filesystem', 'local');
+      $local            = PluginHelper::getPlugin('filesystem', 'local');
       $localDirectories = json_decode((new Registry($local->params))->get('directories', '[{"directory":"images"}]'));
 
       foreach($localDirectories as $localDirectory) {
@@ -76,22 +85,21 @@ class PublicfolderHelper
 
     // Copy the robots
     if (is_file(JPATH_ROOT . '/robots.txt')) {
-      self::createFile($folder . '/robots.txt', file_get_contents(JPATH_ROOT . '/robots.txt'));
+      $files[] = '/robots.txt';
     } elseif (is_file(JPATH_ROOT . '/robots.txt.dist')) {
-      self::createFile($folder . '/robots.txt.dist', file_get_contents(JPATH_ROOT . '/robots.txt.dist'));
+      $files[] = '/robots.txt.dist';
     }
 
     // Copy the apache config
     if (is_file(JPATH_ROOT . '/.htaccess')) {
-      self::createFile($folder . '/.htaccess', file_get_contents(JPATH_ROOT . '/.htaccess'));
+      $files[] = '/.htaccess';
     } elseif (is_file(JPATH_ROOT . '/htaccess.txt')) {
-      self::createFile($folder . '/htaccess.txt', file_get_contents(JPATH_ROOT . '/htaccess.txt'));
+      $files[] = '/htaccess.txt';
     }
 
-    // Create the index.php both for root, api and administrator
-    self::createFile($folder . '/index.php', file_get_contents(JPATH_ROOT . '/index.php'));
-    self::createFile($folder . '/administrator/index.php', file_get_contents(JPATH_ROOT . '/index.php'));
-    self::createFile($folder . '/api/index.php', file_get_contents(JPATH_ROOT . '/api/index.php'));
+    foreach($files as $file) {
+      self::createFile($folder . $file, file_get_contents(JPATH_ROOT . $file));
+    }
 
     $definesTemplate = <<<HTML
 <?php
@@ -103,7 +111,7 @@ class PublicfolderHelper
  * @license    GNU General Public License version 2 or later; see LICENSE.txt
  */
 
-defined('_JEXEC') or die;
+defined('_JEXEC') || die;
 
 // Defines.
 define('JPATH_BASE', {{BASEFOLDER}});
@@ -121,7 +129,6 @@ define('JPATH_MANIFESTS', JPATH_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'manifests
 define('JPATH_API', JPATH_ROOT . DIRECTORY_SEPARATOR . 'api');
 define('JPATH_CLI', JPATH_ROOT . DIRECTORY_SEPARATOR . 'cli');
 define('_JDEFINES', '1');
-
 HTML;
 
     // The defines files
@@ -130,18 +137,6 @@ HTML;
     self::createFile($folder . '/administrator/defines.php', $definesContent);
     self::createFile($folder . '/api/defines.php', $definesContent);
 
-    // Populate the includes
-    self::createFile($folder . '/includes/app.php', file_get_contents(JPATH_ROOT . '/includes/app.php'));
-    self::createFile($folder . '/includes/framework.php', file_get_contents(JPATH_ROOT . '/includes/framework.php'));
-
-    // Populate the administrator/includes
-    self::createFile($folder . '/administrator/includes/app.php', file_get_contents(JPATH_ROOT . '/administrator/includes/app.php'));
-    self::createFile($folder . '/administrator/includes/framework.php', file_get_contents(JPATH_ROOT . '/administrator/includes/framework.php'));
-
-    // Populate the api/includes
-    self::createFile($folder . '/api/includes/app.php', file_get_contents(JPATH_ROOT . '/api/includes/app.php'));
-    self::createFile($folder . '/api/includes/framework.php', file_get_contents(JPATH_ROOT . '/api/includes/framework.php'));
-
-    self::createFile(dirname(dirname(__DIR__)) . '/engaged.json', '{ "publicPath": "'. $folder . '" }');
+    self::createFile(dirname(dirname(__DIR__)) . '/engaged.json', '{ "basePath": "'. JPATH_BASE . '", "publicPath": "'. $folder . '" }');
   }
 }

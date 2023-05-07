@@ -21,17 +21,17 @@ $app->getDocument()
     ['core']
   );
 
-$id = $module->id;
-$data = (object) ['publicPath' => '{{path}}'];
+$id    = $module->id;
+$data  = (object) ['publicPath' => '{{path}}', 'basePath' => JPATH_BASE];
 $token = HTMLHelper::_('form.csrf');
 
 if (is_file(JPATH_ADMINISTRATOR . '/modules/mod_publicfolder/engaged.json')) {
   $formClass = 'publicFolderForm visually-hidden';
-  $resClass = 'publicFolderResults';
-  $data = json_decode(file_get_contents(JPATH_ADMINISTRATOR . '/modules/mod_publicfolder/engaged.json'));
+  $resClass  = 'publicFolderResults';
+  $data      = json_decode(file_get_contents(JPATH_ADMINISTRATOR . '/modules/mod_publicfolder/engaged.json'));
 } else {
   $formClass = 'publicFolderForm';
-  $resClass = 'publicFolderResults visually-hidden';
+  $resClass  = 'publicFolderResults visually-hidden';
 }
 ?>
 <form class="d-grid gap-2 <?= $formClass; ?>">
@@ -46,4 +46,5 @@ if (is_file(JPATH_ADMINISTRATOR . '/modules/mod_publicfolder/engaged.json')) {
 <div class="<?= $resClass; ?>">
   <p>There is an active public folder at</p>
   <code><pre><?= $data->publicPath; ?></pre></code>
+  <code><pre><?= $data->basePath; ?></pre></code>
 </div>
