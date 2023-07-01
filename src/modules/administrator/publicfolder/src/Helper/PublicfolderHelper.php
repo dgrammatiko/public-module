@@ -115,10 +115,10 @@ defined('_JEXEC') || die;
 
 // Defines.
 define('JPATH_BASE', {{BASEFOLDER}});
-define('JPATH_ROOT', JPATH_BASE);
-define('JPATH_SITE', JPATH_ROOT);
-define('JPATH_PUBLIC', {{PUBLICOLDER}});
+define('JPATH_ROOT', {{ROOTFOLDER}});
+define('JPATH_PUBLIC', {{PUBLICFOLDER}});
 define('JPATH_CONFIGURATION', JPATH_ROOT);
+define('JPATH_SITE', JPATH_ROOT);
 define('JPATH_ADMINISTRATOR', JPATH_ROOT . DIRECTORY_SEPARATOR . 'administrator');
 define('JPATH_LIBRARIES', JPATH_ROOT . DIRECTORY_SEPARATOR . 'libraries');
 define('JPATH_PLUGINS', JPATH_ROOT . DIRECTORY_SEPARATOR . 'plugins');
@@ -132,11 +132,19 @@ define('_JDEFINES', '1');
 HTML;
 
     // The defines files
-    $definesContent = str_replace(['{{BASEFOLDER}}', '{{PUBLICFOLDER}}'], ['"' . JPATH_ROOT . '"', '"' . $folder . '"'], $definesTemplate);
-    self::createFile($folder . '/defines.php', $definesContent);
-    self::createFile($folder . '/administrator/defines.php', $definesContent);
-    self::createFile($folder . '/api/defines.php', $definesContent);
+    self::createFile(
+      $folder . '/defines.php',
+      str_replace(['{{ROOTFOLDER}}', '{{BASEFOLDER}}', '{{PUBLICFOLDER}}'], ['"' . JPATH_ROOT . '"', '"' . JPATH_ROOT . '"', '"' . $folder . '"'], $definesTemplate)
+    );
+    self::createFile(
+      $folder . '/administrator/defines.php',
+      str_replace(['{{ROOTFOLDER}}', '{{BASEFOLDER}}', '{{PUBLICFOLDER}}'], ['"' . JPATH_ROOT . '"', '"' . JPATH_ROOT . '/administrator"', '"' . $folder . '"'], $definesTemplate)
+    );
+    self::createFile(
+      $folder . '/api/defines.php',
+      str_replace(['{{ROOTFOLDER}}',  '{{BASEFOLDER}}', '{{PUBLICFOLDER}}'], ['"' . JPATH_ROOT . '"', '"' . JPATH_ROOT . '/api"', '"' . $folder . '"'], $definesTemplate)
+    );
 
-    self::createFile(dirname(dirname(__DIR__)) . '/engaged.json', '{ "basePath": "'. JPATH_BASE . '", "publicPath": "'. $folder . '" }');
+    self::createFile(dirname(dirname(__DIR__)) . '/engaged.json', '{ "basePath": "'. JPATH_ROOT . '", "publicPath": "'. $folder . '" }');
   }
 }

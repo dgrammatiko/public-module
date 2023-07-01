@@ -19,7 +19,6 @@
   <media folder="media" destination="mod_publicfolder">
     <folder>js</folder>
     <folder>css</folder>
-    <folder>images</folder>
   </media>
   <config>
     <fields name="params">
