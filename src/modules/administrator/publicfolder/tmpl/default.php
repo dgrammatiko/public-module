@@ -22,13 +22,13 @@ $app->getDocument()
   );
 
 $id    = $module->id;
-$data  = (object) ['publicPath' => '{{path}}', 'basePath' => JPATH_BASE];
+$data  = (object) ['publicPath' => '{{path}}', 'rootPath' => JPATH_ROOT];
 $token = HTMLHelper::_('form.csrf');
 
-if (is_file(JPATH_ADMINISTRATOR . '/modules/mod_publicfolder/engaged.json')) {
+if (defined('JPATH_PUBLIC') && JPATH_PUBLIC !== JPATH_ROOT) {
   $formClass = 'publicFolderForm visually-hidden';
   $resClass  = 'publicFolderResults';
-  $data      = json_decode(file_get_contents(JPATH_ADMINISTRATOR . '/modules/mod_publicfolder/engaged.json'));
+  $data->publicPath = JPATH_PUBLIC;
 } else {
   $formClass = 'publicFolderForm';
   $resClass  = 'publicFolderResults visually-hidden';
@@ -46,5 +46,5 @@ if (is_file(JPATH_ADMINISTRATOR . '/modules/mod_publicfolder/engaged.json')) {
 <div class="<?= $resClass; ?>">
   <p>There is an active public folder at</p>
   <code><pre><?= $data->publicPath; ?></pre></code>
-  <code><pre><?= $data->basePath; ?></pre></code>
+  <code><pre><?= $data->rootPath; ?></pre></code>
 </div>
